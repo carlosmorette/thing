@@ -1,6 +1,9 @@
 /* General style */
+:root {
+  --primary-color: #1D7874;
+}
 
-.container{
+.local-container{
   margin: 0 auto;
   max-width: 80.0rem;
   padding: 0 2.0rem;
@@ -16,7 +19,6 @@
   padding: 3em 3em 1em;
   margin-bottom: 3rem;
   font-weight: 200;
-  font-family: 'Josefin Sans', sans-serif;
 }
 
 .phx-hero h2{
@@ -26,16 +28,12 @@
 
 
 .phx-hero p strong {
-  color: #1D7874;
-}
-
-/* TODO: Personalizar botao */
-input {
-  
+  color: var(--primary-color);
 }
 
 .phx-logo {
   min-width: 300px;
+  width: 100vw;
   display: block;
   display: flex;
   justify-content: center;
@@ -81,6 +79,15 @@ header nav ul {
 }
 header nav a {
   display: block;
+}
+
+.sign-in-button {
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+.invalid-username {
+  color: red;
 }
 
 @media (min-width: 40.0rem) { /* Small devices (landscape phones, 576px and up) */
