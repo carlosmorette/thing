@@ -1,6 +1,10 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
+@import "./home.css";
 
+:root {
+  --primary-color: #1D7874;
+}
 * {
   border: 0;
   margin: 0;

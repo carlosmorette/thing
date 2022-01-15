@@ -1,0 +1,11 @@
+.home {
+}
+
+.nick{
+  font-size: 2em;
+  margin-bottom: 0.9em;
+}
+
+.nick > span {
+  color: var(--primary-color);
+}

@@ -17,8 +17,7 @@ defmodule ThingWeb.Router do
   scope "/", ThingWeb do
     pipe_through :browser
 
-    # get "/", HomeController, :index
-    live "/", HomeLive
-    live "/chat", ChatLive
+    live "/", WelcomeLive
+    live "/home", HomeLive
   end
 end
