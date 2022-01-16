@@ -1,17 +1,15 @@
 defmodule ThingWeb.ChatLive do
   use Phoenix.LiveView
 
-  def mount(%{"nickname" => nickname}, _session, socket) do
-    IO.inspect("mount #{nickname}")
-    {:ok, socket}
-  end
+  alias ThingWeb.HeaderChatComponent
 
   def mount(_params, _session, socket) do
-    {:ok, push_redirect(socket, to: "/")}
+    {:ok, socket}
   end
 
   def render(assigns) do
     ~H"""
+    <%= live_component HeaderChatComponent, id: :header_chat %>
     <div class="local-container">
       <h1>Chat screen</h1>
     </div>

@@ -15,9 +15,8 @@ defmodule Thing.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Thing.PubSub},
       # Start the Endpoint (http/https)
-      ThingWeb.Endpoint
-      # Start a worker by calling: Thing.Worker.start_link(arg)
-      # {Thing.Worker, arg}
+      ThingWeb.Endpoint,
+      {Cachex, name: :thing}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

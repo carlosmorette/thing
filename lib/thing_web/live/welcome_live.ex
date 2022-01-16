@@ -1,12 +1,21 @@
 defmodule ThingWeb.WelcomeLive do
   use Phoenix.LiveView
 
+  alias ThingWeb.HeaderComponent
+
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, valid_input: true, nickname: "")}
+    case Cachex.get(:thing, "welcome/nickname") do
+      {:ok, nil} ->
+        {:ok, assign(socket, valid_input: true, nickname: "")}
+
+      {:ok, _nickname} ->
+        {:ok, push_redirect(socket, to: "/home")}
+    end
   end
 
   def render(assigns) do
     ~H"""
+    <%= live_component HeaderComponent, id: :header %>
       <div class="local-container">
         <section class="phx-hero">
           <h2>Bem-vindo!</h2>
@@ -41,10 +50,12 @@ defmodule ThingWeb.WelcomeLive do
 
   def handle_event("log-in", _params, socket) do
     if valid_nickname?(socket.assigns.nickname) do
+      {:ok, true} = Cachex.put(:thing, "welcome/nickname", socket.assigns.nickname)
+
       {:noreply,
        socket
        |> assign(:valid_input, true)
-       |> push_redirect(to: "/home?nickname=#{socket.assigns.nickname}")}
+       |> push_redirect(to: "/home")}
     else
       {:noreply, assign(socket, :valid_input, false)}
     end
