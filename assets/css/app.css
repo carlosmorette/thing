@@ -1,15 +1,28 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 @import "./home.css";
+@import "./header_chat.css";
+@import "./header.css";
 
 :root {
-  --primary-color: #1D7874;
+  --green-primary-color: #1D7874;
 }
 * {
   border: 0;
   margin: 0;
   padding: 0;
   font-family: 'Josefin Sans', sans-serif;
+}
+
+p {
+  margin-bottom: 0px !important;
+}
+
+.local-container{
+  margin: 0 auto;
+  max-width: 80.0rem;
+  width: 90%;
+  position: relative;
 }
 
 /* Alerts and form errors used by phx.new */
@@ -97,4 +110,13 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+@media (min-width: 40.0rem) { /* Small devices (landscape phones, 576px and up) */
+  .local-container {
+    width: 70%;
+  }
+  header section a img {
+    width: 25%;
+  }
 }

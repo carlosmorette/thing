@@ -24,7 +24,7 @@ defmodule ThingWeb.WelcomeLive do
         </section>
 
         <%= if not((@valid_input)) do %>
-          <small class="invalid-nickname">Coloque um nick entre 8 e 16 digitos</small>
+          <small class="invalid-nickname">Coloque um nick entre 8 e 16 digitos sem espaços</small>
         <% end %>
 
         <form phx-change="form" class="input-group mb-3">
@@ -49,7 +49,7 @@ defmodule ThingWeb.WelcomeLive do
   end
 
   def handle_event("log-in", _params, socket) do
-    if valid_nickname?(socket.assigns.nickname) do
+    if is_valid_id?(socket.assigns.nickname) do
       {:ok, true} = Cachex.put(:thing, "welcome/nickname", socket.assigns.nickname)
 
       {:noreply,
@@ -61,7 +61,11 @@ defmodule ThingWeb.WelcomeLive do
     end
   end
 
-  def valid_nickname?(nick) do
-    String.length(nick) >= 8 and String.length(nick) <= 16
+  def is_valid_id?(id) do
+    if not Regex.match?(~r/\s/, id) do
+      String.length(id) >= 8 and String.length(id) <= 16
+    else
+      false
+    end
   end
 end

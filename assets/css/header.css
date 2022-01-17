@@ -1,0 +1,20 @@
+.header-component {
+  width: 100%;
+  background: #fdfdfd;
+  border-bottom: 1px solid #eaeaea;
+  margin-bottom: 2rem;
+}
+.header-component section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.header-component section a {
+  display: flex;
+  justify-content: center;
+}
+
+.header-component section a img {
+  width: 25%;
+}

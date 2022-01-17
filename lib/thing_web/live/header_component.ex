@@ -3,7 +3,7 @@ defmodule ThingWeb.HeaderComponent do
 
   def render(assigns) do
     ~H"""
-    <header>
+    <header class="header-component">
       <section>
         <a href="/">
           <img 

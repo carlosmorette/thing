@@ -31,7 +31,7 @@ defmodule ThingWeb.HomeLive do
         </form>
         
         <div class="d-grid gap-2">
-          <button phx-click="log-in" class="btn btn-success" type="button">Entrar</button>
+          <button phx-click="log-in" class="btn enter-button" type="button">Entrar</button>
         </div>
 
       </div>

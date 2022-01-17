@@ -1,0 +1,36 @@
+.header-chat {
+  background-color: var(--green-primary-color);
+  max-height: 10vh;
+  display: flex;
+  align-items: center;
+  padding: 10px 0px;
+}
+
+.header-chat-container {
+  padding: 0 1.0rem;
+  display: flex;
+}
+
+.header-chat img {
+  max-height: 30px;
+}
+
+.header-chat-navbar {
+  display: flex;
+  align-items: center;
+}
+
+.room-details {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  color: white;
+}
+
+.header-chat-nickname {
+  display: flex;
+  align-items: center;
+  margin-left: 40px;
+  color: white;
+}

@@ -1,10 +1,4 @@
 /* General style */
-.local-container{
-  margin: 0 auto;
-  max-width: 80.0rem;
-  padding: 0 2.0rem;
-  position: relative;
-}
 
 /* Phoenix promo and logo */
 .phx-hero {
@@ -24,33 +18,11 @@
 
 
 .phx-hero p strong {
-  color: var(--primary-color);
-}
-
-/* Headers */
-header {
-  width: 100%;
-  background: #fdfdfd;
-  border-bottom: 1px solid #eaeaea;
-  margin-bottom: 2rem;
-}
-header section {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-header section a {
-  display: flex;
-  justify-content: center;
-}
-
-header section a img {
-  width: 25%;
+  color: var(--green-primary-color);
 }
 
 .sign-in-button {
-  background-color: var(--primary-color) !important;
+  background-color: var(--green-primary-color) !important;
   color: #fff !important;
 }
 
@@ -58,11 +30,3 @@ header section a img {
   color: red;
 }
 
-@media (min-width: 40.0rem) { /* Small devices (landscape phones, 576px and up) */
-  .local-container {
-    width: 70%;
-  }
-  header section a img {
-    width: 25%;
-  }
-}
