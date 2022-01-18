@@ -3,9 +3,11 @@
 @import "./home.css";
 @import "./header_chat.css";
 @import "./header.css";
+@import "./bubble_message.css";
 
 :root {
   --green-primary-color: #1D7874;
+  --grey: #D8DAD3
 }
 * {
   border: 0;

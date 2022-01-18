@@ -2,6 +2,7 @@ defmodule ThingWeb.ChatLive do
   use Phoenix.LiveView
 
   alias ThingWeb.HeaderChatComponent
+  alias ThingWeb.BubbleMessageComponent
 
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -9,9 +10,12 @@ defmodule ThingWeb.ChatLive do
 
   def render(assigns) do
     ~H"""
-    <%= live_component HeaderChatComponent, id: :header_chat %>
+    <%= live_component HeaderChatComponent %>
     <div class="local-container">
-      <h1>Chat screen</h1>
+      <%= live_component BubbleMessageComponent, message: "Lorem ipsum \
+      varius ultricies adipiscing 
+      elit justo tortor torquent imperdiet lectus vehicula fames, cursus nulla tellus congue in torquent ut augue neque proin blandit. ", sender_name: :self %>
+      <%= live_component BubbleMessageComponent, message: "Lorem ipsum varius ultricies adipiscing elit justo tortor torquent", sender_name: "littlelorem" %>
     </div>
     """
   end
