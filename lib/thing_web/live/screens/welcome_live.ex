@@ -12,7 +12,7 @@ defmodule ThingWeb.WelcomeLive do
     ~H"""
     <%= live_component HeaderComponent, id: :header %>
       <div class="local-container">
-        <section class="phx-hero">
+        <section class="welcome-section">
           <h2>Bem-vindo!</h2>
           <p>O <strong>Coisa Nossa</strong> foi feito para você ter conversas seguras e temporárias, 
           ou seja, após um tempo elas sumirão e você não precisará se preocupar com seu rastro</p>
@@ -44,23 +44,27 @@ defmodule ThingWeb.WelcomeLive do
   end
 
   def handle_event("log-in", _params, socket) do
-    if is_valid_id?(socket.assigns.nickname) do
-      SubscriberManager.register(socket.assigns.nickname)
+    socket =
+      if is_valid_id?(socket.assigns.nickname) do
+        SubscriberManager.register(socket.assigns.nickname)
 
-      {:noreply,
-       socket
-       |> assign(:valid_nickname, true)
-       |> push_redirect(to: "/home?nickname=#{socket.assigns.nickname}")}
-    else
-      {:noreply, assign(socket, :valid_nickname, false)}
-    end
+        socket
+        |> assign(:valid_nickname, true)
+        |> push_redirect(to: "/home?nickname=#{socket.assigns.nickname}")
+      else
+        assign(socket, :valid_nickname, false)
+      end
+
+    {:noreply, socket}
   end
 
   def is_valid_id?(id) do
-    if not Regex.match?(~r/\s/, id) do
-      String.length(id) >= 8 and String.length(id) <= 16
+    if not Regex.match?(~r/\s/, id) and valid_length?(id) do
+      true
     else
       false
     end
   end
+
+  def valid_length?(id), do: String.length(id) >= 8 and String.length(id) <= 16
 end

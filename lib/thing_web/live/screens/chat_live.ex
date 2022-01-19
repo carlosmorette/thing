@@ -9,19 +9,19 @@ defmodule ThingWeb.ChatLive do
   def mount(%{"nickname" => nickname, "room_id" => room_id}, _session, socket) do
     ChatManager.subscribe(room_id)
 
-    if SubscriberManager.registered?(nickname) do
-      messages = ChatManager.get_all_messages(room_id)
+    socket =
+      if SubscriberManager.registered?(nickname) do
+        assign(socket,
+          messages: ChatManager.get_all_messages(room_id),
+          nickname: nickname,
+          room_id: room_id,
+          input_value: ""
+        )
+      else
+        push_redirect(socket, to: "/")
+      end
 
-      {:ok,
-       assign(socket,
-         messages: messages,
-         nickname: nickname,
-         room_id: room_id,
-         input_value: ""
-       )}
-    else
-      {:ok, push_redirect(socket, to: "/")}
-    end
+    {:ok, socket}
   end
 
   def mount(_params, _session, socket) do

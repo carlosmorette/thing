@@ -6,16 +6,18 @@ defmodule ThingWeb.HomeLive do
   alias ThingWeb.HeaderComponent
 
   def mount(%{"nickname" => nickname}, _session, socket) do
-    if SubscriberManager.registered?(nickname) do
-      {:ok,
-       assign(socket,
-         nickname: nickname,
-         room_id: "",
-         valid_room_id: true
-       )}
-    else
-      {:ok, push_redirect(socket, to: "/")}
-    end
+    socket =
+      if SubscriberManager.registered?(nickname) do
+        assign(socket,
+          nickname: nickname,
+          room_id: "",
+          valid_room_id: true
+        )
+      else
+        push_redirect(socket, to: "/")
+      end
+
+    {:ok, socket}
   end
 
   def mount(_params, _session, socket) do
@@ -59,15 +61,17 @@ defmodule ThingWeb.HomeLive do
   def handle_event("enter-chat", _, socket) do
     room_id = socket.assigns.room_id
 
-    if WelcomeLive.is_valid_id?(room_id) do
-      nickname = socket.assigns.nickname
+    socket =
+      if WelcomeLive.is_valid_id?(room_id) do
+        nickname = socket.assigns.nickname
 
-      {:noreply,
-       socket
-       |> assign(:valid_room_id, true)
-       |> push_redirect(to: "/chat?nickname=#{nickname}&room_id=#{room_id}")}
-    else
-      {:noreply, assign(socket, :valid_room_id, false)}
-    end
+        socket
+        |> assign(:valid_room_id, true)
+        |> push_redirect(to: "/chat?nickname=#{nickname}&room_id=#{room_id}")
+      else
+        assign(socket, :valid_room_id, false)
+      end
+
+    {:noreply, socket}
   end
 end
