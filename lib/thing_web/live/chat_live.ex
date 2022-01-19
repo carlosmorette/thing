@@ -2,16 +2,23 @@ defmodule ThingWeb.ChatLive do
   use Phoenix.LiveView
 
   alias Thing.Managers.SubscriberManager
+  alias Thing.Message
   alias Thing.Managers.ChatManager
   alias ThingWeb.HeaderChatComponent
   alias ThingWeb.BubbleMessageComponent
 
   def mount(%{"nickname" => nickname, "room_id" => room_id}, _session, socket) do
-    IO.inspect({nickname, room_id}, label: "PARAMS")
+    ChatManager.subscribe(room_id)
 
     if SubscriberManager.registered?(nickname) do
-      messages = ChatManager.get_all_messages()
-      {:ok, assign(socket, messages: messages, nickname: nickname)}
+      messages = ChatManager.get_all_messages(room_id)
+
+      {:ok,
+       assign(socket,
+         messages: messages,
+         nickname: nickname,
+         room_id: room_id
+       )}
     else
       {:ok, push_redirect(socket, to: "/")}
     end
@@ -21,21 +28,30 @@ defmodule ThingWeb.ChatLive do
     {:ok, push_redirect(socket, to: "/")}
   end
 
+  @spec format_messages(list(%Message{}), String.t()) :: list(map())
+  defp format_messages(messages, nickname) do
+    Enum.map(messages, fn m ->
+      if m.nickname == nickname, do: %{m | nickname: :self}, else: m
+    end)
+  end
+
   def render(assigns) do
     ~H"""
-    <%= live_component HeaderChatComponent %>
+    <%= live_component(HeaderChatComponent, 
+      room_id: @room_id, 
+      qtd_participants: 12,
+      self_nickname: @nickname
+    ) %>
     <div class="local-container">
-
-      <%= live_component BubbleMessageComponent, message: "Lorem ipsum \
-      varius ultricies adipiscing 
-      elit justo tortor torquent imperdie blandit. ", sender_name: :self %>
-      <%= live_component BubbleMessageComponent, message: "Lorem ipsum varius ultricies adipiscing elit justo tortor torquent", sender_name: "littlelorem" %>
+      <%= for m <- format_messages(@messages, @nickname) do %>
+        <%= live_component(BubbleMessageComponent, content: m.message, sender_name: m.nickname) %>
+      <% end %>
     </div>
     """
   end
 
   def handle_info({:new_message, %{nickname: nickname, message: message}}, socket) do
-    IO.inspect(%{nickname: nickname, message: message}, label: "===nova_mensagem===")
-    {:noreply, socket}
+    updated_messages = socket.assigns.messages ++ [%{nickname: nickname, message: message}]
+    {:noreply, assign(socket, :messages, updated_messages)}
   end
 end

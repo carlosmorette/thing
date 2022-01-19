@@ -11,21 +11,22 @@ defmodule Thing.Managers.ChatManager do
   end
 
   @impl true
-  def handle_call({:new_message, nickname, message}, _from, state) do
-    {:reply, :ok, state ++ [%Message{nickname: nickname, message: message}]}
+  def handle_call({:new_message, nickname, message, room_id}, _from, state) do
+    {:reply, :ok, state ++ [%Message{nickname: nickname, message: message, room_id: room_id}]}
   end
 
   @impl true
-  def handle_call(:get_messages, _from, state) do
-    {:reply, state, state}
+  def handle_call({:get_messages, room_id}, _from, state) do
+    room_messages = Enum.filter(state, fn m -> m.room_id == room_id end)
+    {:reply, room_messages, state}
   end
 
-  def get_all_messages() do
-    GenServer.call(__MODULE__, :get_messages)
+  def get_all_messages(room_id) do
+    GenServer.call(__MODULE__, {:get_messages, room_id})
   end
 
-  def save_message(nickname: nickname, message: message, room_id: room_id) do
-    :ok = GenServer.call(__MODULE__, {:new_message, nickname, message})
+  def add_message(nickname: nickname, message: message, room_id: room_id) do
+    :ok = GenServer.call(__MODULE__, {:new_message, nickname, message, room_id})
 
     Phoenix.PubSub.broadcast(
       Thing.PubSub,
@@ -35,8 +36,7 @@ defmodule Thing.Managers.ChatManager do
   end
 
   def subscribe(room_id) do
+    IO.inspect(room_id, label: "===ROOM_ID===")
     Phoenix.PubSub.subscribe(Thing.PubSub, "room:" <> room_id)
   end
-
-  # TODO: implementar apagar mensagem
 end

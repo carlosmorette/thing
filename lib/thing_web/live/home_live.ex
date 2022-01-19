@@ -7,7 +7,12 @@ defmodule ThingWeb.HomeLive do
 
   def mount(%{"nickname" => nickname}, _session, socket) do
     if SubscriberManager.registered?(nickname) do
-      {:ok, assign(socket, nickname: nickname, room_id: "")}
+      {:ok,
+       assign(socket,
+         nickname: nickname,
+         room_id: "",
+         valid_room_id: true
+       )}
     else
       {:ok, push_redirect(socket, to: "/")}
     end
@@ -23,7 +28,11 @@ defmodule ThingWeb.HomeLive do
     <div class="local-container">
       <div class="home">
         <p class="nick"><span><%= @nickname %></span>, entre e converse!</p>
-      
+        
+        <%= if not((@valid_room_id)) do %>
+          <small class="invalid-nickname">A sala deve ser entre 8 e 16 dígitos sem espaços</small>
+        <% end %>
+
         <form phx-change="form" class="input-group mb-3">
           <input 
             type="text" 
@@ -44,7 +53,6 @@ defmodule ThingWeb.HomeLive do
   end
 
   def handle_event("form", %{"id" => id}, socket) do
-    # TODO: Validar nome do chat, se é valido
     {:noreply, assign(socket, :room_id, id)}
   end
 
@@ -53,9 +61,13 @@ defmodule ThingWeb.HomeLive do
 
     if WelcomeLive.is_valid_id?(room_id) do
       nickname = socket.assigns.nickname
-      {:noreply, push_redirect(socket, to: "/chat?nickname=#{nickname}&room_id=#{room_id}")}
+
+      {:noreply,
+       socket
+       |> assign(:valid_room_id, true)
+       |> push_redirect(to: "/chat?nickname=#{nickname}&room_id=#{room_id}")}
     else
-      # TODO: Mostrar mensagem de que o id é inválido
+      {:noreply, assign(socket, :valid_room_id, false)}
     end
   end
 end

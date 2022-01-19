@@ -7,23 +7,32 @@
 }
 
 .header-chat-container {
+  width: 100%;
   padding: 0 1.0rem;
   display: flex;
 }
 
 .header-chat img {
   max-height: 30px;
+  align-self: center;
+  margin-right: 25px;
 }
 
 .header-chat-navbar {
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+
+.header-chat-navbar div {
+  display: flex;
 }
 
 .room-details {
-  margin-left: 15px;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   font-size: 0.8rem;
   color: white;
 }

@@ -5,7 +5,7 @@ defmodule ThingWeb.WelcomeLive do
   alias ThingWeb.HeaderComponent
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, valid_input: true, nickname: "")}
+    {:ok, assign(socket, valid_nickname: true, nickname: "")}
   end
 
   def render(assigns) do
@@ -18,8 +18,8 @@ defmodule ThingWeb.WelcomeLive do
           ou seja, após um tempo elas sumirão e você não precisará se preocupar com seu rastro</p>
         </section>
 
-        <%= if not((@valid_input)) do %>
-          <small class="invalid-nickname">Coloque um nick entre 8 e 16 digitos sem espaços</small>
+        <%= if not((@valid_nickname)) do %>
+          <small class="invalid-nickname">Coloque um nick entre 8 e 16 dígitos sem espaços</small>
         <% end %>
 
         <form phx-change="form" class="input-group mb-3">
@@ -49,10 +49,10 @@ defmodule ThingWeb.WelcomeLive do
 
       {:noreply,
        socket
-       |> assign(:valid_input, true)
+       |> assign(:valid_nickname, true)
        |> push_redirect(to: "/home?nickname=#{socket.assigns.nickname}")}
     else
-      {:noreply, assign(socket, :valid_input, false)}
+      {:noreply, assign(socket, :valid_nickname, false)}
     end
   end
 

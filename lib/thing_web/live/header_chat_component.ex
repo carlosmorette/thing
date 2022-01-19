@@ -6,16 +6,18 @@ defmodule ThingWeb.HeaderChatComponent do
     <header class="header-chat">
       <div class="header-chat-container">
         <nav class="header-chat-navbar">
-          <img
-            src={Routes.static_path(@socket, "/images/menu-hamburguer.png")}
-            alt="Menu hamburguer"
-          />
-          <div class="room-details">
-            <p>MALUCOSPROGRAM</p>
-            <p>5 participantes</p>
+          <div>
+            <img
+              src={Routes.static_path(@socket, "/images/menu-hamburguer.png")}
+              alt="Menu hamburguer"
+            />
+            <div class="room-details">
+              <p><%= @room_id %></p>
+              <p><%= @qtd_participants %></p>
+            </div>
           </div>
           <div class="header-chat-nickname">
-            <p>cabeçotegordo</p>
+            <p><%= @self_nickname %></p>
           </div>
         </nav>
       </div>

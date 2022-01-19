@@ -5,22 +5,22 @@ defmodule ThingWeb.BubbleMessageComponent do
     {:ok, socket}
   end
 
-  def render(%{message: _message, sender_name: :self} = assigns) do
+  def render(%{content: _content, sender_name: :self} = assigns) do
     ~H"""
     <div class="bubble-container right-align">
       <div class="bubble-message self-bubble">
-        <p><%= @message %></p>
+        <p><%= @content %></p>
       </div>
     </div>
     """
   end
 
-  def render(%{message: _message, sender_name: _sender_name} = assigns) do
+  def render(%{content: _content, sender_name: _sender_name} = assigns) do
     ~H"""
     <div class="bubble-container left-align">
       <div class="bubble-message participant-bubble">
         <p class="bubble-sender-name"><%= @sender_name %></p>
-        <%= @message %>
+        <%= @content %>
       </div>
     </div>
     """
