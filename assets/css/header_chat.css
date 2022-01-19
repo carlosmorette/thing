@@ -31,10 +31,10 @@
 
 .room-details {
   display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: white;
+  align-items: center;
 }
 
 .header-chat-nickname {

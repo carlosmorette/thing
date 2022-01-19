@@ -4,8 +4,7 @@ defmodule ThingWeb.ChatLive do
   alias Thing.Managers.SubscriberManager
   alias Thing.Message
   alias Thing.Managers.ChatManager
-  alias ThingWeb.HeaderChatComponent
-  alias ThingWeb.BubbleMessageComponent
+  alias ThingWeb.{HeaderChatComponent, BubbleMessageComponent}
 
   def mount(%{"nickname" => nickname, "room_id" => room_id}, _session, socket) do
     ChatManager.subscribe(room_id)
@@ -17,7 +16,8 @@ defmodule ThingWeb.ChatLive do
        assign(socket,
          messages: messages,
          nickname: nickname,
-         room_id: room_id
+         room_id: room_id,
+         input_value: ""
        )}
     else
       {:ok, push_redirect(socket, to: "/")}
@@ -42,10 +42,26 @@ defmodule ThingWeb.ChatLive do
       qtd_participants: 12,
       self_nickname: @nickname
     ) %>
+
     <div class="local-container">
       <%= for m <- format_messages(@messages, @nickname) do %>
         <%= live_component(BubbleMessageComponent, content: m.message, sender_name: m.nickname) %>
       <% end %>
+    </div>
+
+    <div class="input-container">
+      <div>
+        <form phx-change="form" class="">
+          <input
+            type="text"
+            value={@input_value}
+            name="input"
+            class="form-control"
+            placeholder="Diga algo..."
+          />
+        </form>
+      </div>
+      <button phx-click="send" class="btn send-button" type="button">Enviar</button>
     </div>
     """
   end
@@ -53,5 +69,15 @@ defmodule ThingWeb.ChatLive do
   def handle_info({:new_message, %{nickname: nickname, message: message}}, socket) do
     updated_messages = socket.assigns.messages ++ [%{nickname: nickname, message: message}]
     {:noreply, assign(socket, :messages, updated_messages)}
+  end
+
+  def handle_event("send", _params, socket) do
+    %{nickname: nickname, room_id: room_id, input_value: input_value} = socket.assigns
+    ChatManager.add_message(nickname: nickname, message: input_value, room_id: room_id)
+    {:noreply, socket}
+  end
+
+  def handle_event("form", %{"input" => value}, socket) do
+    {:noreply, assign(socket, :input_value, value)}
   end
 end

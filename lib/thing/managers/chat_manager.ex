@@ -36,7 +36,13 @@ defmodule Thing.Managers.ChatManager do
   end
 
   def subscribe(room_id) do
-    IO.inspect(room_id, label: "===ROOM_ID===")
     Phoenix.PubSub.subscribe(Thing.PubSub, "room:" <> room_id)
+  end
+
+  if Mix.env() == :dev do
+    @impl true
+    def handle_call(:get_all, _from, state), do: {:reply, state, state}
+
+    def get_all(), do: GenServer.call(__MODULE__, :get_all)
   end
 end

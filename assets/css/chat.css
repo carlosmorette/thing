@@ -1,0 +1,20 @@
+.input-container {
+  width: 100vw;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 8%;
+}
+
+.input-container input {
+  width: 80vw;
+  border-radius: 15px
+}
+
+.input-container .send-button {
+  border-radius: 15px;
+  background-color: var(--green-primary-color);
+  color: white;
+}

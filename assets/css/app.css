@@ -4,6 +4,7 @@
 @import "./header_chat.css";
 @import "./header.css";
 @import "./bubble_message.css";
+@import "./chat.css";
 
 :root {
   --green-primary-color: #1D7874;
