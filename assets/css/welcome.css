@@ -1,7 +1,7 @@
 /* General style */
 
 /* Phoenix promo and logo */
-.phx-hero {
+.welcome-section {
   text-align: center;
   border-bottom: 1px solid #e3e3e3;
   background: #eee;
@@ -11,13 +11,13 @@
   font-weight: 200;
 }
 
-.phx-hero h2{
+.welcome-section h2{
   font-size: 1.5rem; 
   line-height: 1.3
 }
 
 
-.phx-hero p strong {
+.welcome-section p strong {
   color: var(--green-primary-color);
 }
 
