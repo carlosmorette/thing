@@ -1,16 +1,20 @@
 defmodule ThingWeb.HomeLive do
   use Phoenix.LiveView
 
+  alias ThingWeb.WelcomeLive
+  alias Thing.Managers.SubscriberManager
   alias ThingWeb.HeaderComponent
 
-  def mount(_params, _session, socket) do
-    case Cachex.get(:thing, "welcome/nickname") do
-      {:ok, nil} ->
-        {:ok, push_redirect(socket, to: "/")}
-
-      {:ok, nickname} ->
-        {:ok, assign(socket, nickname: nickname, room_id: nil)}
+  def mount(%{"nickname" => nickname}, _session, socket) do
+    if SubscriberManager.registered?(nickname) do
+      {:ok, assign(socket, nickname: nickname, room_id: "")}
+    else
+      {:ok, push_redirect(socket, to: "/")}
     end
+  end
+
+  def mount(_params, _session, socket) do
+    {:ok, push_redirect(socket, to: "/")}
   end
 
   def render(assigns) do
@@ -31,7 +35,7 @@ defmodule ThingWeb.HomeLive do
         </form>
         
         <div class="d-grid gap-2">
-          <button phx-click="log-in" class="btn enter-button" type="button">Entrar</button>
+          <button phx-click="enter-chat" class="btn enter-button" type="button">Entrar</button>
         </div>
 
       </div>
@@ -40,6 +44,18 @@ defmodule ThingWeb.HomeLive do
   end
 
   def handle_event("form", %{"id" => id}, socket) do
+    # TODO: Validar nome do chat, se é valido
     {:noreply, assign(socket, :room_id, id)}
+  end
+
+  def handle_event("enter-chat", _, socket) do
+    room_id = socket.assigns.room_id
+
+    if WelcomeLive.is_valid_id?(room_id) do
+      nickname = socket.assigns.nickname
+      {:noreply, push_redirect(socket, to: "/chat?nickname=#{nickname}&room_id=#{room_id}")}
+    else
+      # TODO: Mostrar mensagem de que o id é inválido
+    end
   end
 end

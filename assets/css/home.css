@@ -7,10 +7,10 @@
 }
 
 .nick > span {
-  color: var(--primary-color);
+  color: var(--green-primary-color);
 }
 
 .enter-button {
-  background-color: var(--primary-color) !important;
+  background-color: var(--green-primary-color) !important;
   color: #FFFFFF !important;
 }

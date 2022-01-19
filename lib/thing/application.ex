@@ -16,7 +16,11 @@ defmodule Thing.Application do
       {Phoenix.PubSub, name: Thing.PubSub},
       # Start the Endpoint (http/https)
       ThingWeb.Endpoint,
-      {Cachex, name: :thing}
+      # Message store
+      Thing.Managers.ChatManager,
+
+      # Subscriber Store
+      Thing.Managers.SubscriberManager
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

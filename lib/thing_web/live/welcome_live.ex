@@ -1,16 +1,11 @@
 defmodule ThingWeb.WelcomeLive do
   use Phoenix.LiveView
 
+  alias Thing.Managers.SubscriberManager
   alias ThingWeb.HeaderComponent
 
   def mount(_params, _session, socket) do
-    case Cachex.get(:thing, "welcome/nickname") do
-      {:ok, nil} ->
-        {:ok, assign(socket, valid_input: true, nickname: "")}
-
-      {:ok, _nickname} ->
-        {:ok, push_redirect(socket, to: "/home")}
-    end
+    {:ok, assign(socket, valid_input: true, nickname: "")}
   end
 
   def render(assigns) do
@@ -50,12 +45,12 @@ defmodule ThingWeb.WelcomeLive do
 
   def handle_event("log-in", _params, socket) do
     if is_valid_id?(socket.assigns.nickname) do
-      {:ok, true} = Cachex.put(:thing, "welcome/nickname", socket.assigns.nickname)
+      SubscriberManager.register(socket.assigns.nickname)
 
       {:noreply,
        socket
        |> assign(:valid_input, true)
-       |> push_redirect(to: "/home")}
+       |> push_redirect(to: "/home?nickname=#{socket.assigns.nickname}")}
     else
       {:noreply, assign(socket, :valid_input, false)}
     end
