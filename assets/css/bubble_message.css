@@ -1,6 +1,7 @@
 .bubble-container {
   display: flex;
   margin: 10px 0px;
+  max-width: 80%;
 }
 
 .right-align {
