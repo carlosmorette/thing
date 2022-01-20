@@ -12,6 +12,7 @@ defmodule ThingWeb.ChatLive do
     socket =
       if SubscriberManager.registered?(nickname) do
         assign(socket,
+          page_title: room_id,
           messages: ChatManager.get_all_messages(room_id),
           nickname: nickname,
           room_id: room_id,

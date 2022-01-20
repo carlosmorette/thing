@@ -1,0 +1,27 @@
+.internal-error-container {
+  width: 100vw;
+  margin-top: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--dark-grey);
+  animation: infinite 2s up-down;
+}
+
+.internal-error-container img {
+  width: 70px;
+}
+
+@keyframes up-down {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(20px);
+  }
+
+  100%{
+    transform: translateY(0);
+  }
+}

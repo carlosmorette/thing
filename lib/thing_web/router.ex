@@ -20,5 +20,6 @@ defmodule ThingWeb.Router do
     live "/", WelcomeLive
     live "/home", HomeLive
     live "/chat", ChatLive
+    get "/*path", NotFoundController, :index
   end
 end

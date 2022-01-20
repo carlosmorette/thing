@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>500 - Internal error</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+   <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
+  </head>
+  <body>
+    <div class="internal-error-container">
+      <h1>500 - Erro Inesperado :(</h1>
+      <img
+        src={Routes.static_path(@conn, "/images/xicara-coisa-nossa.png")}
+        alt="Xicara Coisa Nossa"
+      />
+    </div>
+  </body>
+</html>

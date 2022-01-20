@@ -5,7 +5,12 @@ defmodule ThingWeb.WelcomeLive do
   alias ThingWeb.HeaderComponent
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, valid_nickname: true, nickname: "")}
+    {:ok,
+     assign(socket,
+       page_title: "Bem Vindo",
+       valid_nickname: true,
+       nickname: ""
+     )}
   end
 
   def render(assigns) do

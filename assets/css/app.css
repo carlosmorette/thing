@@ -5,11 +5,12 @@
 @import "./header.css";
 @import "./bubble_message.css";
 @import "./chat.css";
-@import "./not_found.css";
+@import "./internal_error.css";
 
 :root {
   --green-primary-color: #1D7874;
-  --grey: #D8DAD3
+  --grey: #D8DAD3;
+  --dark-grey: #545454;
 }
 * {
   border: 0;

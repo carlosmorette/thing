@@ -9,6 +9,7 @@ defmodule ThingWeb.HomeLive do
     socket =
       if SubscriberManager.registered?(nickname) do
         assign(socket,
+          page_title: "Home",
           nickname: nickname,
           room_id: "",
           valid_room_id: true
