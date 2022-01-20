@@ -5,6 +5,7 @@
 @import "./header.css";
 @import "./bubble_message.css";
 @import "./chat.css";
+@import "./not_found.css";
 
 :root {
   --green-primary-color: #1D7874;
@@ -64,7 +65,7 @@ p {
 
 @media (min-width: 40.0rem) { /* Small devices (landscape phones, 576px and up) */
   .local-container {
-    width: 70%;
+    width: 90%;
   }
   header section a img {
     width: 25%;

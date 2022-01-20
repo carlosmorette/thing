@@ -17,6 +17,7 @@ defmodule ThingWeb.ChatLive do
           room_id: room_id,
           input_value: ""
         )
+        |> push_event("into-chat", %{})
       else
         push_redirect(socket, to: "/")
       end
@@ -43,7 +44,7 @@ defmodule ThingWeb.ChatLive do
       self_nickname: @nickname
     ) %>
 
-    <div class="local-container">
+    <div class="chat-container">
       <%= for m <- format_messages(@messages, @nickname) do %>
         <%= live_component(BubbleMessageComponent, content: m.message, sender_name: m.nickname) %>
       <% end %>
@@ -51,7 +52,7 @@ defmodule ThingWeb.ChatLive do
 
     <div class="input-container">
       <div>
-        <form phx-change="form" class="">
+        <form phx-change="form" autocomplete="off">
           <input
             type="text"
             value={@input_value}
@@ -61,20 +62,34 @@ defmodule ThingWeb.ChatLive do
           />
         </form>
       </div>
-      <button phx-click="send" class="btn send-button" type="button">Enviar</button>
+      <button 
+        phx-click="send" 
+        phx-hook="Button"
+        autocomplete="false"
+        id="btn-send-message"
+        class="btn send-button" 
+        type="button">Enviar</button>
     </div>
     """
   end
 
   def handle_info({:new_message, %{nickname: nickname, message: message}}, socket) do
     updated_messages = socket.assigns.messages ++ [%{nickname: nickname, message: message}]
-    {:noreply, assign(socket, :messages, updated_messages)}
+
+    {:noreply,
+     socket
+     |> assign(:messages, updated_messages)
+     |> push_event("new-message", %{})}
   end
 
   def handle_event("send", _params, socket) do
     %{nickname: nickname, room_id: room_id, input_value: input_value} = socket.assigns
-    ChatManager.add_message(nickname: nickname, message: input_value, room_id: room_id)
-    {:noreply, socket}
+
+    unless input_value == "" do
+      ChatManager.add_message(nickname: nickname, message: input_value, room_id: room_id)
+    end
+
+    {:noreply, assign(socket, :input_value, "")}
   end
 
   def handle_event("form", %{"input" => value}, socket) do

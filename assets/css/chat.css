@@ -1,15 +1,20 @@
+.chat-container {
+  margin-bottom: 20%;
+}
+
 .input-container {
   width: 100vw;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   height: 8%;
+  margin: 15px 5px;
 }
 
 .input-container input {
-  width: 80vw;
+  width: 70vw;
   border-radius: 15px
 }
 
@@ -17,4 +22,10 @@
   border-radius: 15px;
   background-color: var(--green-primary-color);
   color: white;
+}
+
+@media (min-width: 40.0rem) {
+  .chat-container {
+    margin-bottom: 15%;
+  }
 }

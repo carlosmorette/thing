@@ -23,7 +23,8 @@ defmodule ThingWeb.WelcomeLive do
         <% end %>
 
         <form phx-change="form" class="input-group mb-3">
-          <input 
+          <input
+            autocomplete="off"
             type="text" 
             value={@nickname}
             name="input"

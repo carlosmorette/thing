@@ -25,10 +25,4 @@ defmodule ThingWeb.BubbleMessageComponent do
     </div>
     """
   end
-
-  def render(assigns) do
-    ~H"""
-      <div></div>
-    """
-  end
 end

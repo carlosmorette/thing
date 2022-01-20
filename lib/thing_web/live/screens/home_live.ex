@@ -37,7 +37,8 @@ defmodule ThingWeb.HomeLive do
 
         <form phx-change="form" class="input-group mb-3">
           <input 
-            type="text" 
+            autocomplete="off"
+            type="text"
             name="id"
             value={@room_id}
             class="form-control" 
