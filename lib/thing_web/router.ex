@@ -1,6 +1,8 @@
 defmodule ThingWeb.Router do
   use ThingWeb, :router
 
+  alias ThingWeb.RateLimiter
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session

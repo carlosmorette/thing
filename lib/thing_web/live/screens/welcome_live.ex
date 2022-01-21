@@ -2,15 +2,23 @@ defmodule ThingWeb.WelcomeLive do
   use Phoenix.LiveView
 
   alias Thing.Managers.SubscriberManager
-  alias ThingWeb.HeaderComponent
+  alias ThingWeb.{HeaderComponent, LoadingComponent}
 
   def mount(_params, _session, socket) do
-    {:ok,
-     assign(socket,
-       page_title: "Bem Vindo",
-       valid_nickname: true,
-       nickname: ""
-     )}
+    if connected?(socket) do
+      {:ok,
+       assign(socket,
+         page_title: "Bem Vindo",
+         valid_nickname: true,
+         nickname: ""
+       )}
+    else
+      {:ok, assign(socket, page: "loading")}
+    end
+  end
+
+  def render(%{page: "loading"} = assigns) do
+    LoadingComponent.render(assigns)
   end
 
   def render(assigns) do

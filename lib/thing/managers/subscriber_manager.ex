@@ -13,6 +13,10 @@ defmodule Thing.Managers.SubscriberManager do
     Agent.update(__MODULE__, fn users -> [nickname | users] end)
   end
 
+  def remove(nickname) do
+    Agent.update(__MODULE__, &Enum.reject(&1, fn u -> u == nickname end))
+  end
+
   if Mix.env() == :dev do
     def get_all(), do: Agent.get(__MODULE__, fn users -> users end)
   end

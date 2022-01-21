@@ -46,7 +46,8 @@ defmodule Thing.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:phoenix_pubsub, "~> 2.0"}
+      {:phoenix_pubsub, "~> 2.0"},
+      {:hammer, "~> 6.0"}
     ]
   end
 

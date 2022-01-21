@@ -1,7 +1,7 @@
 .internal-error-container {
   width: 100vw;
-  margin-top: 30%;
   display: flex;
+  margin-top: 100px;
   flex-direction: column;
   align-items: center;
   color: var(--dark-grey);

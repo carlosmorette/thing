@@ -6,6 +6,7 @@
 @import "./bubble_message.css";
 @import "./chat.css";
 @import "./internal_error.css";
+@import "./generic_error.css";
 
 :root {
   --green-primary-color: #1D7874;
