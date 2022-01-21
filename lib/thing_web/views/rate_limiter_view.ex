@@ -1,7 +1,7 @@
-defmodule ThingWeb.ExceededLimitComponent do
-  use Phoenix.Component
+defmodule ThingWeb.RateLimiterView do
+  use ThingWeb, :view
 
-  def render(assigns) do
+  def render("rate_limiter.html", assigns) do
     ~H"""
     <div class="local-container">
       <div class="generic-error-container">

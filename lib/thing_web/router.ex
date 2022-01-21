@@ -12,12 +12,17 @@ defmodule ThingWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :security do
+    plug RateLimiter
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
   scope "/", ThingWeb do
     pipe_through :browser
+    pipe_through :security
 
     live "/", WelcomeLive
     live "/home", HomeLive

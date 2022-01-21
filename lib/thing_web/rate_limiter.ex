@@ -1,14 +1,27 @@
 defmodule ThingWeb.RateLimiter do
+  import Phoenix.Controller
+  import Plug.Conn
+
   def init(opts), do: opts
 
   def call(conn, _opts) do
     conn
     |> get_ip()
     |> check_ip()
+    |> case do
+      :allow ->
+        conn
+
+      :deny ->
+        conn
+        |> put_view(ThingWeb.RateLimiterView)
+        |> render("rate_limiter.html")
+        |> halt()
+    end
   end
 
   defp get_ip(conn) do
-    conn[:address]
+    conn.remote_ip
     |> Tuple.to_list()
     |> Enum.join(".")
   end
