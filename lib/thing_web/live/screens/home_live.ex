@@ -3,32 +3,31 @@ defmodule ThingWeb.HomeLive do
 
   alias ThingWeb.WelcomeLive
   alias Thing.Managers.SubscriberManager
-  alias ThingWeb.HeaderComponent
-
-  def mount(%{"nickname" => nickname}, _session, socket) do
-    socket =
-      if SubscriberManager.registered?(nickname) do
-        assign(socket,
-          page_title: "Home",
-          nickname: nickname,
-          room_id: "",
-          valid_room_id: true
-        )
-      else
-        push_redirect(socket, to: "/")
-      end
-
-    {:ok, socket}
-  end
+  alias ThingWeb.{HeaderComponent, LoadingComponent}
+  # alias Thing.Schemas.Room
 
   def mount(_params, _session, socket) do
-    {:ok, push_redirect(socket, to: "/")}
+    if connected?(socket) do
+      {:ok,
+       assign(socket,
+         page_title: "Home",
+         room_id: "",
+         nickname: "",
+         valid_room_id: true
+       )}
+    else
+      {:ok, assign(socket, page: "loading")}
+    end
+  end
+
+  def render(%{page: "loading"} = assigns) do
+    LoadingComponent.render(assigns)
   end
 
   def render(assigns) do
     ~H"""
     <%= live_component HeaderComponent, id: :header %>
-    <div class="local-container">
+    <div class="local-container" phx-hook="HomeLive" id="home-container">
       <div class="home">
         <p class="nick"><span><%= @nickname %></span>, entre e converse!</p>
         
@@ -56,6 +55,24 @@ defmodule ThingWeb.HomeLive do
     """
   end
 
+  def handle_event("mounted", %{"nickname" => nickname}, socket) do
+    socket =
+      if SubscriberManager.registered?(nickname) do
+        assign(socket, :nickname, nickname)
+      else
+        push_redirect(socket, to: "/")
+      end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("created-room", %{"room_id" => _room}, socket) do
+    {:noreply,
+     socket
+     |> assign(:valid_room_id, true)
+     |> push_redirect(to: "/chat")}
+  end
+
   def handle_event("form", %{"id" => id}, socket) do
     {:noreply, assign(socket, :room_id, id)}
   end
@@ -65,11 +82,8 @@ defmodule ThingWeb.HomeLive do
 
     socket =
       if WelcomeLive.is_valid_id?(room_id) do
-        nickname = socket.assigns.nickname
-
-        socket
-        |> assign(:valid_room_id, true)
-        |> push_redirect(to: "/chat?nickname=#{nickname}&room_id=#{room_id}")
+        # Room.insert(name: room_id)
+        push_event(socket, "new-room", %{room_id: room_id})
       else
         assign(socket, :valid_room_id, false)
       end

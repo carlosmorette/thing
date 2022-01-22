@@ -21,7 +21,7 @@
   color: var(--green-primary-color);
 }
 
-.sign-in-button {
+.sign-up-button {
   background-color: var(--green-primary-color) !important;
   color: #fff !important;
 }

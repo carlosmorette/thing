@@ -47,10 +47,22 @@ defmodule ThingWeb.WelcomeLive do
         </form>
 
         <div class="d-grid gap-2">
-          <button phx-click="log-in" class="sign-in-button btn" type="button">Acessar</button>
+          <button 
+            phx-hook="SignUpButton" 
+            phx-click="log-in" 
+            id="btn-sign-up"
+            class="sign-up-button btn" 
+            type="button">Acessar</button>
         </div>
       </div>
     """
+  end
+
+  def handle_event("registered", %{"nickname" => _nickname}, socket) do
+    {:noreply,
+     socket
+     |> assign(:valid_nickname, true)
+     |> push_redirect(to: "/home")}
   end
 
   def handle_event("form", %{"input" => value}, socket) do
@@ -60,11 +72,10 @@ defmodule ThingWeb.WelcomeLive do
   def handle_event("log-in", _params, socket) do
     socket =
       if is_valid_id?(socket.assigns.nickname) do
-        SubscriberManager.register(socket.assigns.nickname)
+        nickname = socket.assigns.nickname
+        SubscriberManager.register(nickname)
 
-        socket
-        |> assign(:valid_nickname, true)
-        |> push_redirect(to: "/home?nickname=#{socket.assigns.nickname}")
+        push_event(socket, "new-subscriber", %{nickname: nickname})
       else
         assign(socket, :valid_nickname, false)
       end

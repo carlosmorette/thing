@@ -28,12 +28,35 @@ import topbar from "../vendor/topbar"
 
 let Hooks = {}
 
-Hooks.Button = {
+Hooks.SignUpButton = {
 	mounted() {
+		this.handleEvent("new-subscriber", ({ nickname }) => {
+			sessionStorage.setItem("nickname", nickname)
+			this.pushEvent("registered", { nickname })
+		})
+	}
+}
+
+Hooks.HomeLive = {
+	mounted() {
+		this.pushEvent("mounted", {nickname: sessionStorage.getItem("nickname")})
+		this.handleEvent("new-room", ({room_id}) => {
+			sessionStorage.setItem("roomId", room_id)
+			this.pushEvent("created-room", { room_id })
+		})
+	}
+}
+
+Hooks.ChatLive = {
+	mounted() {
+		nickname = sessionStorage.getItem("nickname")
+		roomId = sessionStorage.getItem("roomId")
+		this.pushEvent("mounted", {nickname, room_id: roomId})
+
 		this.handleEvent("new-message", () => {
 			window.scrollTo(0, document.body.scrollHeight);
 		})
-		this.handleEvent("into-chat", () => {
+		this.handleEvent("joined-chat", () => {
 			window.scrollTo(0, document.body.scrollHeight);
 		})
 
