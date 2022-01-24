@@ -29,38 +29,38 @@ import topbar from "../vendor/topbar"
 let Hooks = {}
 
 Hooks.SignUpButton = {
-	mounted() {
+  mounted() {
 		this.handleEvent("new-subscriber", ({ nickname }) => {
-			sessionStorage.setItem("nickname", nickname)
-			this.pushEvent("registered", { nickname })
+	  	sessionStorage.setItem("nickname", nickname)
+			this.pushEvent("hook:signup-button:registered", { nickname })
 		})
-	}
+  }
 }
 
 Hooks.HomeLive = {
-	mounted() {
-		this.pushEvent("mounted", {nickname: sessionStorage.getItem("nickname")})
-		this.handleEvent("new-room", ({room_id}) => {
-			sessionStorage.setItem("roomId", room_id)
-			this.pushEvent("created-room", { room_id })
-		})
+  mounted() {
+		this.pushEvent("hook:home-live:mounted", {nickname: sessionStorage.getItem("nickname")})
+	
+		this.handleEvent("new-room", ({ room_name }) => {
+			sessionStorage.setItem("roomName", room_name)
+			this.pushEvent("hook:home-live:created-room", { room_name })
+		})  
 	}
 }
 
 Hooks.ChatLive = {
 	mounted() {
 		nickname = sessionStorage.getItem("nickname")
-		roomId = sessionStorage.getItem("roomId")
-		this.pushEvent("mounted", {nickname, room_id: roomId})
+		roomName = sessionStorage.getItem("roomName")
+		this.pushEvent("hook:chat-live:mounted", {nickname, room_name: roomName})
 
 		this.handleEvent("new-message", () => {
 			window.scrollTo(0, document.body.scrollHeight);
 		})
 		this.handleEvent("joined-chat", () => {
-			window.scrollTo(0, document.body.scrollHeight);
+	    window.scrollTo(0, document.body.scrollHeight);
 		})
-
-	}
+  }
 }
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")

@@ -1,4 +1,4 @@
-defmodule Thing.Managers.SubscriberManager do
+defmodule Thing.SubscriberManager do
   use Agent
 
   def start_link(_) do
@@ -15,6 +15,10 @@ defmodule Thing.Managers.SubscriberManager do
 
   def remove(nickname) do
     Agent.update(__MODULE__, &Enum.reject(&1, fn u -> u == nickname end))
+  end
+
+  def remove_all() do
+    Agent.update(__MODULE__, fn _ -> [] end)
   end
 
   if Mix.env() == :dev do

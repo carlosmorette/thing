@@ -1,27 +1,38 @@
 defmodule ThingWeb.ChatLive do
   use Phoenix.LiveView
 
-  alias Thing.Managers.SubscriberManager
-  alias Thing.Message
-  alias Thing.Managers.ChatManager
-  # alias Thing.Schemas.Room
+  alias Thing.SubscriberManager
+  # alias Thing.Managers.ChatManager
+  alias Thing.Schemas.{Room, Message}
   alias ThingWeb.{HeaderChatComponent, BubbleMessageComponent, LoadingComponent}
+
+  @type individual_message :: %{sender_name: String.t(), content: String.t()}
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
       {:ok,
        socket
-       |> assign(page_title: "", messages: [], nickname: "", room_id: "", input_value: "")
+       |> assign(
+         page_title: "",
+         messages: [],
+         nickname: "",
+         room_name: "",
+         input_value: ""
+       )
        |> push_event("joined-chat", %{})}
     else
       {:ok, assign(socket, page: "loading")}
     end
   end
 
-  @spec format_messages(list(%Message{}), String.t()) :: list(map())
+  @spec format_messages(list(individual_message()), String.t()) :: any()
   defp format_messages(messages, nickname) do
     Enum.map(messages, fn m ->
-      if m.nickname == nickname, do: %{m | nickname: :self}, else: m
+      if m.sender_name == nickname do
+        %{content: m.content, nickname: :self}
+      else
+        %{content: m.content, nickname: m.sender_name}
+      end
     end)
   end
 
@@ -32,14 +43,13 @@ defmodule ThingWeb.ChatLive do
   def render(assigns) do
     ~H"""
     <%= live_component(HeaderChatComponent, 
-      room_id: @room_id, 
-      qtd_participants: 12,
+      room_name: @room_name, 
       self_nickname: @nickname
     ) %>
 
     <div class="chat-container" phx-hook="ChatLive" id="chat-container">
       <%= for m <- format_messages(@messages, @nickname) do %>
-        <%= live_component(BubbleMessageComponent, content: m.message, sender_name: m.nickname) %>
+        <%= live_component(BubbleMessageComponent, content: m.content, sender_name: m.nickname) %>
       <% end %>
     </div>
 
@@ -56,7 +66,7 @@ defmodule ThingWeb.ChatLive do
         </form>
       </div>
       <button 
-        phx-click="send" 
+        phx-click="send-new-message" 
         autocomplete="false"
         id="btn-send-message"
         class="btn send-button" 
@@ -65,30 +75,20 @@ defmodule ThingWeb.ChatLive do
     """
   end
 
-  def handle_event("form", %{"input" => value}, socket) do
-    {:noreply, assign(socket, :input_value, value)}
-  end
-
-  def handle_event("send", _params, socket) do
-    %{nickname: nickname, room_id: room_id, input_value: input_value} = socket.assigns
-
-    unless input_value == "" do
-      ChatManager.add_message(nickname: nickname, message: input_value, room_id: room_id)
-    end
-
-    {:noreply, assign(socket, :input_value, "")}
-  end
-
-  def handle_event("mounted", %{"nickname" => nickname, "room_id" => room_id}, socket) do
-    ChatManager.subscribe(room_id)
+  def handle_event(
+        "hook:chat-live:mounted",
+        %{"nickname" => nickname, "room_name" => room_name} = _params,
+        socket
+      ) do
+    Message.subscribe(room_name)
 
     socket =
-      if SubscriberManager.registered?(nickname) do
+      if SubscriberManager.registered?(nickname) and Room.exists?(name: room_name) do
         assign(socket,
           nickname: nickname,
-          messages: ChatManager.get_all_messages(room_id),
-          room_id: room_id,
-          page_title: room_id
+          messages: Message.get_all_messages_by_room_name(room_name),
+          room_name: room_name,
+          page_title: room_name
         )
       else
         push_redirect(socket, to: "/")
@@ -97,8 +97,22 @@ defmodule ThingWeb.ChatLive do
     {:noreply, socket}
   end
 
+  def handle_event("form", %{"input" => value}, socket) do
+    {:noreply, assign(socket, :input_value, value)}
+  end
+
+  def handle_event("send-new-message", _params, socket) do
+    %{nickname: nickname, room_name: room_name, input_value: input_value} = socket.assigns
+
+    unless input_value == "" do
+      Message.add_message(message: input_value, nickname: nickname, room_name: room_name)
+    end
+
+    {:noreply, assign(socket, :input_value, "")}
+  end
+
   def handle_info({:new_message, %{nickname: nickname, message: message}}, socket) do
-    updated_messages = socket.assigns.messages ++ [%{nickname: nickname, message: message}]
+    updated_messages = socket.assigns.messages ++ [%{sender_name: nickname, content: message}]
 
     {:noreply,
      socket

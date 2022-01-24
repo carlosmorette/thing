@@ -2,18 +2,18 @@ defmodule ThingWeb.HomeLive do
   use Phoenix.LiveView
 
   alias ThingWeb.WelcomeLive
-  alias Thing.Managers.SubscriberManager
+  alias Thing.SubscriberManager
   alias ThingWeb.{HeaderComponent, LoadingComponent}
-  # alias Thing.Schemas.Room
+  alias Thing.Schemas.Room
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
       {:ok,
        assign(socket,
          page_title: "Home",
-         room_id: "",
+         room_name: "",
          nickname: "",
-         valid_room_id: true
+         valid_room_name: true
        )}
     else
       {:ok, assign(socket, page: "loading")}
@@ -31,7 +31,7 @@ defmodule ThingWeb.HomeLive do
       <div class="home">
         <p class="nick"><span><%= @nickname %></span>, entre e converse!</p>
         
-        <%= if not((@valid_room_id)) do %>
+        <%= if not((@valid_room_name)) do %>
           <small class="invalid-nickname">A sala deve ser entre 8 e 16 dígitos sem espaços</small>
         <% end %>
 
@@ -39,8 +39,8 @@ defmodule ThingWeb.HomeLive do
           <input 
             autocomplete="off"
             type="text"
-            name="id"
-            value={@room_id}
+            name="room_name"
+            value={@room_name}
             class="form-control" 
             placeholder="ID da sua sala" 
           />
@@ -55,7 +55,7 @@ defmodule ThingWeb.HomeLive do
     """
   end
 
-  def handle_event("mounted", %{"nickname" => nickname}, socket) do
+  def handle_event("hook:home-live:mounted", %{"nickname" => nickname}, socket) do
     socket =
       if SubscriberManager.registered?(nickname) do
         assign(socket, :nickname, nickname)
@@ -66,28 +66,45 @@ defmodule ThingWeb.HomeLive do
     {:noreply, socket}
   end
 
-  def handle_event("created-room", %{"room_id" => _room}, socket) do
+  def handle_event("hook:home-live:created-room", %{"room_name" => _room}, socket) do
     {:noreply,
      socket
-     |> assign(:valid_room_id, true)
+     |> assign(:valid_room_name, true)
      |> push_redirect(to: "/chat")}
   end
 
-  def handle_event("form", %{"id" => id}, socket) do
-    {:noreply, assign(socket, :room_id, id)}
+  def handle_event("form", %{"room_name" => room_name}, socket) do
+    {:noreply, assign(socket, :room_name, room_name)}
   end
 
-  def handle_event("enter-chat", _, socket) do
-    room_id = socket.assigns.room_id
+  def handle_event("enter-chat", _params, socket) do
+    room_name = socket.assigns.room_name
 
     socket =
-      if WelcomeLive.is_valid_id?(room_id) do
-        # Room.insert(name: room_id)
-        push_event(socket, "new-room", %{room_id: room_id})
-      else
-        assign(socket, :valid_room_id, false)
+      case is_valid_name?(room_name) do
+        :ok ->
+          create_if_not_exist(room_name)
+          push_event(socket, "new-room", %{room_name: room_name})
+
+        {:error, :invalid} ->
+          assign(socket, :valid_room_name, false)
       end
 
     {:noreply, socket}
+  end
+
+  def is_valid_name?(room_name) do
+    with :ok <- WelcomeLive.has_not_space?(room_name),
+         :ok <- WelcomeLive.valid_length?(room_name) do
+      :ok
+    else
+      {:error, _error} -> {:error, :invalid}
+    end
+  end
+
+  def create_if_not_exist(room_name) do
+    unless Room.exists?(name: room_name) do
+      Room.insert(name: room_name)
+    end
   end
 end

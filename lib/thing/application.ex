@@ -17,10 +17,13 @@ defmodule Thing.Application do
       # Start the Endpoint (http/https)
       ThingWeb.Endpoint,
       # Message store
-      Thing.Managers.ChatManager,
+      # Thing.Managers.ChatManager,
+
+      # Cron job
+      Thing.Scheduler,
 
       # Subscriber Store
-      Thing.Managers.SubscriberManager
+      Thing.SubscriberManager
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

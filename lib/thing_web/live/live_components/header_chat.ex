@@ -12,7 +12,7 @@ defmodule ThingWeb.HeaderChatComponent do
               alt="Menu hamburguer"
             />
             <div class="room-details">
-              <p>Sala: <%= @room_id %></p>
+              <p>Sala: <%= @room_name %></p>
             </div>
           </div>
           <div class="header-chat-nickname">

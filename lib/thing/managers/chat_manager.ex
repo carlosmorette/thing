@@ -1,7 +1,5 @@
-defmodule Thing.Managers.ChatManager do
+defmodule Thing.ChatManager do
   use GenServer
-
-  alias Thing.Message
 
   @impl true
   def init(_stack), do: {:ok, []}
@@ -12,7 +10,7 @@ defmodule Thing.Managers.ChatManager do
 
   @impl true
   def handle_call({:new_message, nickname, message, room_id}, _from, state) do
-    {:reply, :ok, state ++ [%Message{nickname: nickname, message: message, room_id: room_id}]}
+    {:reply, :ok, state ++ [%{nickname: nickname, message: message, room_id: room_id}]}
   end
 
   @impl true

@@ -22,7 +22,7 @@ defmodule ThingWeb.Router do
 
   scope "/", ThingWeb do
     pipe_through :browser
-    pipe_through :security
+    # pipe_through :security
 
     live "/", WelcomeLive
     live "/home", HomeLive

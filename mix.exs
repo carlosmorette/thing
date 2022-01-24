@@ -47,7 +47,8 @@ defmodule Thing.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:phoenix_pubsub, "~> 2.0"},
-      {:hammer, "~> 6.0"}
+      {:hammer, "~> 6.0"},
+      {:quantum, "~> 3.0"}
     ]
   end
 
